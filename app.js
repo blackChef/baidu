@@ -1,70 +1,36 @@
-var urlTool = require('url');
-var querystringTool = require('querystring');
-var http = require('http');
-
+var express = require('express');
 var request = require('request');
-var fs = require('fs-extra');
 var cheerio = require('cheerio');
+var he = require('he');
 
-http.createServer(function(req, res) {
-  router(req, res);
-}).listen(4000);
+var app = express();
+app.use(express.static('public'));
 
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
 
-var routerMap = {
-  '/': index,
-  '/baidu': baidu,
-};
-
-function router(req, res) {
-  var pathname = urlTool.parse(req.url).pathname;
-  var querystring = querystringTool.parse( urlTool.parse(req.url).query );
-
-  console.log('request: ' + req.url);
-
-  if (routerMap[pathname]) {
-    routerMap[pathname](req, res, pathname, querystring);
-  } else {
-    res.writeHead(404);
-    res.end();
-  }
-}
-
-function index(req, res, pathname, querystring) {
-  fs.createReadStream('./public/index.html').pipe(res);
-}
+  console.log('Example app listening at http://%s:%s', host, port);
+});
 
 
 
-function baidu(req, res, pathname, querystring) {
-  var baseUrl = 'http://www.baidu.com/s?wd={{word}}&pn={{page}}';
-  var word = querystring.word;
-  var page = querystring.page;
+app.get('/baidu', function(req, res) {
+  var word = req.query.word;
+  var page = req.query.page;
 
-  if (word) {
-    word = encodeURIComponent(word);
-    url = baseUrl.replace(/{{word}}/g, word).
-                  replace(/{{page}}/g, (page - 1)*10);
+  word = encodeURIComponent(word);
 
-    fetch(url, req, res);
-  }
-}
+  var url = `http://www.baidu.com/s?wd=${word}&pn=${(page - 1) * 10}`;
 
-function transformHtmlEntities(str) {
-  var ret = str.replace(/&nbsp;/g, ' ').
-                replace(/&lt;/g, '<').
-                replace(/&gt;/g, '>').
-                replace(/&amp;/g, '&').
-                replace(/&yen;/g, '¥');
-  return ret;
-}
+  fetch(url, req, res);
+});
+
 
 function fetch(url, req, res) {
-  request(url, function(err, baiduRes, body) {
+  request({url: url, timeout: 2000}, function(err, baiduRes, body) {
     if (err) {
-      console.log(err);
-      res.writeHead(500);
-      res.end(err.message);
+      res.status(500).end(err.message);
 
     } else {
       var ret = [];
@@ -72,31 +38,35 @@ function fetch(url, req, res) {
       var resultOp = $('#content_left .result-op');
       var resultNormal = $('#content_left .result');
 
-      resultOp.each(function() {
-        var $this = $(this);
-        var anchor = $this.find('.t a');
-        var info = $this.find('.f13 .g');
+      var getInfo = function(item) {
+        var $item = $(item);
+        var anchor = $item.find('.t a');
+        var info = $item.find('.f13 .g');
+
         ret.push({
-          href:anchor.attr('href'),
-          text:anchor.text(),
-          info:info.text(),
+          href: anchor.attr('href'),
+          text: he.decode( anchor.text().trim(), {
+            strict: false
+          } ),
+          info: he.decode( info.text().trim(), {
+            strict: false
+          } ),
         });
+      };
+
+      resultOp.each(function() {
+        getInfo(this);
       });
 
       resultNormal.each(function() {
-        var $this = $(this);
-        var anchor = $this.find('.t a');
-        var info = $this.find('.f13 .g');
-        ret.push({
-          href:anchor.attr('href'),
-          text:anchor.text(),
-          info:info.text(),
-        });
+        getInfo(this);
       });
 
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end( transformHtmlEntities( JSON.stringify(ret) ) );
+      // random delay
+      var delay = Math.floor(Math.random() * (1000 - 0 + 1)) + 0;
+      setTimeout(function() {
+        res.json(ret);
+      }, delay);
     }
   });
 }
-

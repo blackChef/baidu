@@ -1,0 +1,106 @@
+body {
+  font-size: 14px;
+  font-family: "Microsoft yahei", arial;
+  min-height: 100vh;
+  padding-bottom: 30px;
+}
+
+#page-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.page {
+  display: flex;
+  margin-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.result-title {
+  flex-basis: 2em;
+  margin: 0;
+  border-right: 1px solid #dddddd;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+#search {
+  display: flex;
+}
+
+#search-input {
+  padding: 5px;
+  width: 300px;
+  border: 1px solid #ddd;
+  border-right: none;
+  outline: none;
+}
+
+#search-btn {
+  background-color: #4d90fe;
+  background-image: linear-gradient(top,#4d90fe,#4787ed);
+  border: 1px solid #3079ed;
+  color: white;
+  padding: 0 10px;
+}
+
+.links {
+  margin: 0;
+  list-style-type: decimal-leading-zero;
+}
+
+.link-item {
+  line-height: 1.5;
+}
+
+.link-item.not-match {
+  opacity: 0.2;
+  font-size: 60%;
+}
+
+.link-item.not-match:hover {
+  opacity: 1;
+}
+
+.link-item span {
+  margin-left: 1em;
+  color: #AAAAAA;
+}
+
+.link-item span:not(:empty)::before {
+  content: "---- ";
+}
+
+#hostnames {
+  visibility: hidden;
+  transition: 300ms;
+  opacity: 0;
+}
+
+#hostnames.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hostnames-item {
+  margin-right: 1em;
+  white-space: nowrap;
+}
+
+.hostnames-item:first-child {
+  display: block;
+}
+
+.hostnames-item.active {
+  color: red;
+}
+
+.hostnames-count::before {
+  content: '(';
+}
+
+.hostnames-count::after {
+  content: ')';
+}
