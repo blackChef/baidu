@@ -28,7 +28,7 @@ app.get('/baidu', function(req, res) {
 
 
 function fetch(url, req, res) {
-  request({url: url, timeout: 2000}, function(err, baiduRes, body) {
+  request({url: url, timeout: 5000}, function(err, baiduRes, body) {
     if (err) {
       res.status(500).end(err.message);
 

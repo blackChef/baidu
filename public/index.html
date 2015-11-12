@@ -5,52 +5,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no">
   <title>Document</title>
-
-  <link href="http://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/3.0.3/normalize.min.css">
   <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
-  <div id="page-wrapper">
-    <header>
-      <form id="search" action="/baidu">
-        <div class="search-logo"></div>
-        <input type="search" name="word" id="search-input">
-        <button type="submit" id="search-btn">搜索</button>
-      </form>
-    </header>
+  <header>
+    <form class="search" action="/baidu">
+      <div class="search-logo"></div>
+      <input type="search" name="word" class="search-input">
+      <button type="submit" class="search-btn">搜索</button>
+    </form>
+  </header>
 
-    <main class="row">
-      <section id="result" class="col-md-8">
-        <!-- ko foreach:renderData -->
-        <section class="page">
-          <h1 class="result-title" data-bind="text: 'p' + page"></h1>
-          <ol class="links" data-bind="foreach: links">
-            <li class="link-item" data-bind="css: { 'not-match': !matchFilter }">
-              <a data-bind="text: text, attr: { href: href }" target="_blank"></a>
-              <span data-bind="text: info"></span>
-            </li>
-          </ol>
-        </section>
-        <!-- /ko -->
+  <main>
+    <section class="result">
+      <!-- ko foreach:renderData -->
+      <section class="page">
+        <h1 class="result-title" data-bind="text: 'p' + page"></h1>
+        <ol class="links" data-bind="foreach: links">
+          <li class="link-item" data-bind="css: { 'not-match': !matchFilter }">
+            <a data-bind="text: text, attr: { href: href }" target="_blank"></a>
+            <span data-bind="text: info"></span>
+          </li>
+        </ol>
       </section>
+      <!-- /ko -->
+    </section>
 
-      <section id="hostnames" class="col-md-4">
-        <a href="##" class="hostnames-item" data-bind="click: $root.filter">显示全部</a>
-        <!-- ko foreach: hostnames-->
-        <a href="##" class="hostnames-item" data-bind="click: $root.filter">
-          <span class="hostnames-url" data-bind="text: url"></span>
-          <span class="hostnames-count" data-bind="text: count"></span>
-        </a>
-        <!-- /ko -->
-      </section>
-    </main>
-  </div>
+    <section class="hostnames">
+      <a href="##" class="hostnames-item" data-bind="click: $root.filter">显示全部</a>
+      <!-- ko foreach: hostnames-->
+      <a href="##" class="hostnames-item" data-bind="click: $root.filter">
+        <span class="hostnames-url" data-bind="text: url"></span>
+        <span class="hostnames-count" data-bind="text: count"></span>
+      </a>
+      <!-- /ko -->
+    </section>
+  </main>
 
   <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
   <script src="http://cdn.bootcss.com/knockout/3.3.0/knockout-min.js"></script>
-  <script src="js/rx.lite.js"></script>
-  <script src="js/index.js"></script>
+  <script src="js/rx.all.js"></script>
+  <script src="js/foo.js"></script>
 </body>
 
 </html>

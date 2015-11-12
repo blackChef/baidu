@@ -1,61 +1,67 @@
-$('#search').submit(function(event) {
+
+$('.search').submit(function(event) {
   event.preventDefault();
   clearResult();
 
-  var result = [];
   var word = $('[name="word"]').val();
-  var urls = [];
-  var i = 1;
-  while (i <= 5) {
-    result[i - 1] = undefined;
 
-    (function(page) {
-      $.get('http://localhost:3000/baidu?word=' + word + '&page=' + page, function(res) {
-        result[page - 1] = {
-          page: page,
-          links: res
-        };
+  var source = Rx.Observable.range(1, 5).concatMap(function(page) {
+    var s = Rx.Observable.fromCallback(function(callback) {
+      $.get('http://localhost:3000/baidu?word=' + word + '&page=' + page, callback);
+    });
+    return s();
+  }).map(function(item) {
+    return item[0];
+  });
 
-        render(result);
-
-        var isFull = result.every(function(item, index, array) {
-          return item;
-        });
-
-        if (isFull) {
-          onFull(result);
-        }
-      });
-    })(i);
-
-    i++;
-  }
+  var subscription = source.subscribe(onItem, onErr, onComplete);
 });
 
-function onFull(result) {
-  vm.getHostnames();
-  $('#hostnames').addClass('active');
+function onItem(pageContent) {
+  render(pageContent);
 }
+
+function onErr(err) {
+
+}
+
+function onComplete() {
+  vm.getHostnames();
+  $('.hostnames').addClass('active');
+}
+
+
+var content = [];
+function render(pageContent) {
+  // console.log(pageContent);
+  content.push({
+    page: content.length + 1,
+    links: pageContent
+  });
+
+  requestAnimationFrame(function() {
+    vm.result(content);
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function clearResult() {
   vm.result([]);
   vm.hostnames([]);
   vm.filterUrl('');
-  $('#hostnames').removeClass('active');
-}
-
-function render(result) {
-  var ret = [];
-  for (var i = 0, len = result.length; i < len; i++) {
-    var item = result[i];
-    if (!item) {
-      break;
-    } else {
-      ret.push(item);
-    }
-  }
-
-  vm.result(ret);
+  $('.hostnames').removeClass('active');
 }
 
 function Constructor() {
@@ -116,6 +122,7 @@ function Constructor() {
       return b.count - a.count;
     });
 
+    console.log(uniqHostnames);
     self.hostnames(uniqHostnames);
   };
 }

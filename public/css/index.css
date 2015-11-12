@@ -2,13 +2,8 @@ body {
   font-size: 14px;
   font-family: "Microsoft yahei", arial;
   min-height: 100vh;
-  padding-bottom: 30px;
-}
-
-#page-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
   padding: 15px;
+  padding-bottom: 30px;
 }
 
 .page {
@@ -26,11 +21,11 @@ body {
   font-size: 20px;
 }
 
-#search {
+.search {
   display: flex;
 }
 
-#search-input {
+.search-input {
   padding: 5px;
   width: 300px;
   border: 1px solid #ddd;
@@ -38,7 +33,7 @@ body {
   outline: none;
 }
 
-#search-btn {
+.search-btn {
   background-color: #4d90fe;
   background-image: linear-gradient(top,#4d90fe,#4787ed);
   border: 1px solid #3079ed;
@@ -73,13 +68,13 @@ body {
   content: "---- ";
 }
 
-#hostnames {
+.hostnames {
   visibility: hidden;
   transition: 300ms;
   opacity: 0;
 }
 
-#hostnames.active {
+.hostnames.active {
   visibility: visible;
   opacity: 1;
 }
