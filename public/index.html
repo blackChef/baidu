@@ -5,289 +5,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no">
   <title>Document</title>
-  <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
-  <script src="http://cdn.bootcss.com/knockout/3.2.0/knockout-min.js"></script>
-  <link href="http://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-
-  <style>
-
-  body {
-    font-size: 14px;
-    font-family: "Microsoft yahei", arial;
-    min-height: 100vh;
-    padding-bottom: 30px;
-  }
-
-  #page-wrapper {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 15px;
-  }
-
-  .page {
-    display: flex;
-    margin-top: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #dddddd;
-  }
-
-  .result-title {
-    flex-basis: 2em;
-    margin: 0;
-    border-right: 1px solid #dddddd;
-    margin-right: 10px;
-    font-size: 20px;
-  }
-
-  #search {
-    display: flex;
-  }
-
-  #search-input {
-    padding: 5px;
-    width: 300px;
-    border: 1px solid #ddd;
-    border-right: none;
-    outline: none;
-  }
-
-  #search-btn {
-    background-color: #4d90fe;
-    background-image: linear-gradient(top,#4d90fe,#4787ed);
-    border: 1px solid #3079ed;
-    color: white;
-    padding: 0 10px;
-  }
-
-  .links {
-    margin: 0;
-    list-style-type: decimal-leading-zero;
-  }
-
-  .link-item {
-    line-height: 1.5;
-  }
-
-  .link-item.not-match {
-    opacity: 0.2;
-    font-size: 60%;
-  }
-
-  .link-item.not-match:hover {
-    opacity: 1;
-  }
-
-  .link-item span {
-    margin-left: 1em;
-    color: #AAAAAA;
-  }
-
-  .link-item span:not(:empty)::before {
-    content: "---- ";
-  }
-
-  #hostnames {
-    visibility: hidden;
-    transition: 300ms;
-    opacity: 0;
-  }
-
-  #hostnames.active {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .hostnames-item {
-    margin-right: 1em;
-    white-space: nowrap;
-  }
-
-  .hostnames-item:first-child {
-    display: block;
-  }
-
-  .hostnames-item.active {
-    color: red;
-  }
-
-  .hostnames-count::before {
-    content: '(';
-  }
-
-  .hostnames-count::after {
-    content: ')';
-  }
-  </style>
+  <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
-  <div id="page-wrapper">
-    <header>
-       <form id="search" action="/baidu">
-        <div class="search-logo"></div>
-        <input type="search" name="word" id="search-input">
-        <button type="submit" id="search-btn">搜索</button>
-      </form>
-    </header>
+  <header class="page-header">
+    <form class="search" action="/baidu">
+      <input type="search" name="word" class="search-input" autocomplete="off">
+      <button type="submit" class="search-btn">搜索</button>
+    </form>
+  </header>
 
-    <main class="row">
-      <section id="result" class="col-md-8">
-        <!-- ko foreach:renderData -->
-        <section class="page">
-          <h1 class="result-title" data-bind="text: 'p' + page"></h1>
-          <ol class="links" data-bind="foreach: links">
-            <li class="link-item" data-bind="css: { 'not-match': !matchFilter }">
-              <a data-bind="text: text, attr: { href: href }" target="_blank"></a>
-              <span data-bind="text: info"></span>
-            </li>
-          </ol>
-        </section>
-        <!-- /ko -->
+  <main class="page-main">
+    <section class="result">
+      <!-- ko foreach:renderData -->
+      <section class="page">
+        <h1 class="result-title" data-bind="text: 'p' + page"></h1>
+        <ol class="links" data-bind="foreach: links">
+          <li class="links-item" data-bind="css: { 'notMatch': !matchFilter }">
+            <a class="links-item-anchor" data-bind="text: text, attr: { href: href }" target="_blank"></a>
+            <span class="links-item-meta" data-bind="text: info"></span>
+          </li>
+        </ol>
       </section>
+      <!-- /ko -->
+    </section>
 
-      <section id="hostnames" class="col-md-4">
-        <a href="##" class="hostnames-item" data-bind="click: $root.filter">显示全部</a>
-        <!-- ko foreach: hostnames-->
-        <a href="##" class="hostnames-item" data-bind="click: $root.filter">
-          <span class="hostnames-url" data-bind="text: url"></span>
-          <span class="hostnames-count" data-bind="text: count"></span>
-        </a>
-        <!-- /ko -->
-      </section>
-    </main>
+    <section class="hostnames">
+      <a href="##" class="hostnames-toggle" data-bind="click: $root.filter">显示全部</a>
+      <!-- ko foreach: hostnames-->
+      <a href="##" class="hostnames-item" data-bind="click: $root.filter">
+        <span class="hostnames-item-url" data-bind="text: url"></span>
+        <span class="hostnames-item-count" data-bind="text: count"></span>
+      </a>
+      <!-- /ko -->
+    </section>
+  </main>
 
-
-
-
-
-
-    <script>
-    $('#search').submit(function(event) {
-      event.preventDefault();
-      clear();
-
-      var result = [];
-      var word = $('[name="word"]').val();
-      var urls = [];
-      var i = 1;
-      while (i <= 5) {
-        result[i - 1] = undefined;
-
-        (function(page) {
-          $.get('/baidu?word=' + word + '&page=' + page, function(res) {
-            result[page - 1] = {
-              page: page,
-              links: res
-            };
-
-            render(result);
-
-            var isFull = result.every(function(item, index, array) {
-              return item;
-            });
-
-            if (isFull) {
-              onFull(result);
-            }
-          });
-        })(i);
-
-        i++;
-      }
-    });
-
-    function onFull(result) {
-      vm.getHostnames();
-      $('#hostnames').addClass('active');
-    }
-
-    function clear() {
-      vm.result([]);
-      vm.hostnames([]);
-      vm.filterUrl('');
-      $('#hostnames').removeClass('active');
-    }
-
-    function render(result) {
-      var ret = [];
-      for (var i = 0, len = result.length; i < len; i++) {
-        var item = result[i];
-        if (!item) {
-          break;
-        } else {
-          ret.push(item);
-        }
-      }
-
-      vm.result(ret);
-    }
-
-    function Constructor() {
-      var self = this;
-      self.result = ko.observableArray([]);
-      self.filterUrl = ko.observable('');
-
-      self.filter = function(data, event) {
-        $('.hostnames-item.active').removeClass('active');
-        $(event.target).parent('.hostnames-item').addClass('active');
-        self.filterUrl(data.url);
-      };
-
-      self.renderData = ko.computed(function() {
-        var url = self.filterUrl();
-        var ret = self.result().map(function(page, index, array) {
-          return {
-            page: page.page,
-            links: page.links.map(function(item, index, array) {
-              if (url && item.info.indexOf(url) == -1) {
-                item.matchFilter = false;
-              } else {
-                item.matchFilter = true;
-              }
-              return item;
-            }),
-          };
-        });
-
-        return ret;
-      });
-
-      self.hostnames = ko.observableArray([]);
-
-      self.getHostnames = function() {
-        var hostnames = self.result().map(function(item, index, array) {
-          return item.links.map(function(link, index, array) {
-            return link.info? link.info.split(' ')[0].match(/.[^\/]*/)[0] : '';
-          });
-        }).reduce(function(previousValue, currentItem, index, array) {
-          return previousValue.concat(currentItem);
-        }, []);
-
-        var ret = hostnames.filter(function(item, index, array) {
-          return item && array.indexOf(item) == index;
-        });
-
-        ret = ret.map(function(url, index, array) {
-          var count = hostnames.filter(function(item, index, array) {
-            return item == url;
-          }).length;
-
-          return {
-            url: url,
-            count: count
-          };
-        }).sort(function(a, b) {
-          return b.count - a.count;
-        });
-
-        self.hostnames(ret);
-      };
-    }
-
-    var vm = new Constructor();
-    ko.applyBindings(vm);
-    </script>
-  </div>
+  <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+  <script src="http://cdn.bootcss.com/knockout/3.3.0/knockout-min.js"></script>
+  <script src="js/rx.all.js"></script>
+  <script src="js/rxAsync.js"></script>
 </body>
 
 </html>
+
