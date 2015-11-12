@@ -1,7 +1,13 @@
 
+var subscription;
+
 $('.search').submit(function(event) {
   event.preventDefault();
   clearResult();
+
+  if (subscription) {
+    subscription.dispose();
+  }
 
   var word = $('[name="word"]').val();
 
@@ -14,7 +20,7 @@ $('.search').submit(function(event) {
     return item[0];
   });
 
-  var subscription = source.subscribe(onItem, onErr, onComplete);
+  subscription = source.subscribe(onItem, onErr, onComplete);
 });
 
 function onItem(pageContent) {
@@ -108,7 +114,6 @@ function Constructor() {
       return b.count - a.count;
     });
 
-    console.log(uniqHostnames);
     self.hostnames(uniqHostnames);
   };
 }
