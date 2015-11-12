@@ -30,7 +30,6 @@ function onComplete() {
   $('.hostnames').addClass('active');
 }
 
-
 var content = [];
 function render(pageContent) {
   // console.log(pageContent);
@@ -39,30 +38,17 @@ function render(pageContent) {
     links: pageContent
   });
 
-  requestAnimationFrame(function() {
-    vm.result(content);
-  });
+  vm.result(content);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 function clearResult() {
+  content = [];
   vm.result([]);
   vm.hostnames([]);
   vm.filterUrl('');
   $('.hostnames').removeClass('active');
 }
+
 
 function Constructor() {
   var self = this;

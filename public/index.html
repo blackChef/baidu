@@ -5,28 +5,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no">
   <title>Document</title>
-  <link rel="stylesheet" href="http://cdn.bootcss.com/normalize/3.0.3/normalize.min.css">
   <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
-  <header>
+  <header class="page-header">
     <form class="search" action="/baidu">
-      <div class="search-logo"></div>
       <input type="search" name="word" class="search-input">
       <button type="submit" class="search-btn">搜索</button>
     </form>
   </header>
 
-  <main>
+  <main class="page-main">
     <section class="result">
       <!-- ko foreach:renderData -->
       <section class="page">
         <h1 class="result-title" data-bind="text: 'p' + page"></h1>
         <ol class="links" data-bind="foreach: links">
-          <li class="link-item" data-bind="css: { 'not-match': !matchFilter }">
-            <a data-bind="text: text, attr: { href: href }" target="_blank"></a>
-            <span data-bind="text: info"></span>
+          <li class="links-item" data-bind="css: { 'notMatch': !matchFilter }">
+            <a class="links-item-anchor" data-bind="text: text, attr: { href: href }" target="_blank"></a>
+            <span class="links-item-meta" data-bind="text: info"></span>
           </li>
         </ol>
       </section>
@@ -34,11 +32,11 @@
     </section>
 
     <section class="hostnames">
-      <a href="##" class="hostnames-item" data-bind="click: $root.filter">显示全部</a>
+      <a href="##" class="hostnames-toggle" data-bind="click: $root.filter">显示全部</a>
       <!-- ko foreach: hostnames-->
       <a href="##" class="hostnames-item" data-bind="click: $root.filter">
-        <span class="hostnames-url" data-bind="text: url"></span>
-        <span class="hostnames-count" data-bind="text: count"></span>
+        <span class="hostnames-item-url" data-bind="text: url"></span>
+        <span class="hostnames-item-count" data-bind="text: count"></span>
       </a>
       <!-- /ko -->
     </section>
@@ -47,7 +45,7 @@
   <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
   <script src="http://cdn.bootcss.com/knockout/3.3.0/knockout-min.js"></script>
   <script src="js/rx.all.js"></script>
-  <script src="js/foo.js"></script>
+  <script src="js/rxAsync.js"></script>
 </body>
 
 </html>

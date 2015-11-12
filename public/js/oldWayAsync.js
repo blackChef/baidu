@@ -1,4 +1,4 @@
-$('#search').submit(function(event) {
+$('.search').submit(function(event) {
   event.preventDefault();
   clearResult();
 
@@ -34,14 +34,14 @@ $('#search').submit(function(event) {
 
 function onFull(result) {
   vm.getHostnames();
-  $('#hostnames').addClass('active');
+  $('.hostnames').addClass('active');
 }
 
 function clearResult() {
   vm.result([]);
   vm.hostnames([]);
   vm.filterUrl('');
-  $('#hostnames').removeClass('active');
+  $('.hostnames').removeClass('active');
 }
 
 function render(result) {
