@@ -74,22 +74,22 @@ function fetch(url, req, res) {
       // random delay
       var delay = Math.floor(Math.random() * (1000 - 0 + 1)) + 0;
 
-      if (i < 5) {
-        setTimeout(function() {
-          res.json(ret);
-        }, 5000);
-      } else {
-        setTimeout(function() {
-          res.json(ret);
-        }, 0);
-      }
+      // if (i < 5) {
+      //   setTimeout(function() {
+      //     res.json(ret);
+      //   }, 5000);
+      // } else {
+      //   setTimeout(function() {
+      //     res.json(ret);
+      //   }, 0);
+      // }
 
-      i += 1;
-      if (i == 10) {
-        i = 0;
-      }
+      // i += 1;
+      // if (i == 10) {
+      //   i = 0;
+      // }
       // setTimeout(function() {
-      //   res.json(ret);
+        res.json(ret);
       // }, 1000);
     }
   });

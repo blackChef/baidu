@@ -11,19 +11,28 @@ $('.search').submit(function(event) {
 
   var word = $('[name="word"]').val();
 
-  var source = Rx.Observable.range(1, 5).concatMap(function(page) {
-    var s = Rx.Observable.fromCallback(function(callback) {
-      $.get('http://localhost:3000/baidu?word=' + word + '&page=' + page, callback);
-    });
-    return s();
-  }).map(function(item) {
-    return item[0];
-  });
+  var source = Rx.Observable.range(1, 5).
+      concatMap(function(page) {
+        var s = Rx.Observable.fromCallback(function(callback) {
+          $.get('http://localhost:3000/baidu?word=' + word + '&page=' + page, callback);
+        });
+        return s();
+      }).
+      map(function(item) {
+        return item[0];
+      }).
+      scan(function(preVal, curItem) {
+        preVal.push({
+          page: preVal.length + 1,
+          links: curItem
+        });
+        return preVal;
+      }, []);
 
-  subscription = source.subscribe(onItem, onErr, onComplete);
+  subscription = source.subscribe(onNext, onErr, onComplete);
 });
 
-function onItem(pageContent) {
+function onNext(pageContent) {
   render(pageContent);
 }
 
@@ -36,19 +45,11 @@ function onComplete() {
   $('.hostnames').addClass('active');
 }
 
-var content = [];
 function render(pageContent) {
-  // console.log(pageContent);
-  content.push({
-    page: content.length + 1,
-    links: pageContent
-  });
-
-  vm.result(content);
+  vm.result(pageContent);
 }
 
 function clearResult() {
-  content = [];
   vm.result([]);
   vm.hostnames([]);
   vm.filterUrl('');
