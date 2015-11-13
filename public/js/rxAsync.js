@@ -9,18 +9,12 @@ $('.search').submit(function(event) {
     subscription.dispose();
   }
 
-  var word = $('[name="word"]').val();
-
-  var source = Rx.Observable.range(1, 5).
+  var source = Rx.Observable.range(1, 1).
       concatMap(function(page) {
-        var s = Rx.Observable.fromCallback(function(callback) {
-          $.get('http://localhost:3000/baidu?word=' + word + '&page=' + page, callback);
-        });
-        return s();
+        var url = `http://localhost:3000/baidu?word=${$('[name="word"]').val()}&page=${page}`;
+        return Rx.Observable.fromPromise( $.getJSON(url) );
       }).
-      map(function(item) {
-        return item[0];
-      }).
+      retry(3).
       scan(function(preVal, curItem) {
         preVal.push({
           page: preVal.length + 1,
@@ -37,7 +31,7 @@ function onNext(pageContent) {
 }
 
 function onErr(err) {
-
+  console.log(err);
 }
 
 function onComplete() {
