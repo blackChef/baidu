@@ -34,10 +34,16 @@ app.get('/baidu', function(req, res) {
   fetch(url, req, res);
 });
 
-var i = 0;
 
+var i = 1;
 function fetch(url, req, res) {
   request({url: url, timeout: 5000}, function(err, baiduRes, body) {
+    if (i % 3 !== 0) {
+      res.status(500).end('error');
+      i += 1;
+      return;
+    }
+
     if (err) {
       res.status(500).end(err.message);
 
@@ -71,26 +77,9 @@ function fetch(url, req, res) {
         getInfo(this);
       });
 
-      // random delay
-      var delay = Math.floor(Math.random() * (1000 - 0 + 1)) + 0;
-
-      // if (i < 5) {
-      //   setTimeout(function() {
-      //     res.json(ret);
-      //   }, 5000);
-      // } else {
-      //   setTimeout(function() {
-      //     res.json(ret);
-      //   }, 0);
-      // }
-
-      // i += 1;
-      // if (i == 10) {
-      //   i = 0;
-      // }
-      // setTimeout(function() {
-        res.json(ret);
-      // }, 1000);
+      res.json(ret);
     }
+
+    i += 1;
   });
 }
