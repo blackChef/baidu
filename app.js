@@ -31,19 +31,16 @@ app.get('/baidu', function(req, res) {
 
   var url = `http://www.baidu.com/s?wd=${word}&pn=${(page - 1) * 10}`;
 
+  if (page != 1) {
+    res.status(500).end(page);
+    return;
+  }
+
   fetch(url, req, res);
 });
 
-
-var i = 1;
 function fetch(url, req, res) {
   request({url: url, timeout: 5000}, function(err, baiduRes, body) {
-    if (i % 3 !== 0) {
-      res.status(500).end('error');
-      i += 1;
-      return;
-    }
-
     if (err) {
       res.status(500).end(err.message);
 
@@ -79,7 +76,5 @@ function fetch(url, req, res) {
 
       res.json(ret);
     }
-
-    i += 1;
   });
 }

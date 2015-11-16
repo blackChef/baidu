@@ -9,12 +9,11 @@ $('.search').submit(function(event) {
     subscription.dispose();
   }
 
-  var source = Rx.Observable.range(1, 1).
+  var source = Rx.Observable.range(1, 5).
       concatMap(function(page) {
         var url = `http://localhost:3000/baidu?word=${$('[name="word"]').val()}&page=${page}`;
-        return Rx.Observable.fromPromise( $.getJSON(url) );
+        return Rx.Observable.defer( () => $.getJSON(url) ).retry(3);
       }).
-      retry(3).
       scan(function(preVal, curItem) {
         preVal.push({
           page: preVal.length + 1,
@@ -27,6 +26,7 @@ $('.search').submit(function(event) {
 });
 
 function onNext(pageContent) {
+  console.log('onNext');
   render(pageContent);
 }
 

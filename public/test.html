@@ -1,0 +1,31 @@
+  <script src="js/rx.all.js"></script>
+  <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+  <button type="button">click</button>
+
+  <script>
+    document.querySelector('button').addEventListener('click', function() {
+      var url = `http://localhost:3000/baidu?word=ff&page=2`;
+      // var source = Rx.Observable.fromPromise( $.getJSON(url) ).retry(3);
+
+      var source = Rx.Observable.defer(function() {
+        return  $.getJSON(url);
+      });
+
+      var subscription = source.retry(2).subscribe(
+        function() {
+
+        },
+
+        function() {
+
+        },
+
+        function() {
+
+        }
+      );
+    }, false);
+
+
+  </script>
