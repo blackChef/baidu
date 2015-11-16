@@ -31,10 +31,13 @@ app.get('/baidu', function(req, res) {
 
   var url = `http://www.baidu.com/s?wd=${word}&pn=${(page - 1) * 10}`;
 
+  if (page != 1) {
+    res.status(500).end(page);
+    return;
+  }
+
   fetch(url, req, res);
 });
-
-var i = 0;
 
 function fetch(url, req, res) {
   request({url: url, timeout: 5000}, function(err, baiduRes, body) {
@@ -71,26 +74,7 @@ function fetch(url, req, res) {
         getInfo(this);
       });
 
-      // random delay
-      var delay = Math.floor(Math.random() * (1000 - 0 + 1)) + 0;
-
-      // if (i < 5) {
-      //   setTimeout(function() {
-      //     res.json(ret);
-      //   }, 5000);
-      // } else {
-      //   setTimeout(function() {
-      //     res.json(ret);
-      //   }, 0);
-      // }
-
-      // i += 1;
-      // if (i == 10) {
-      //   i = 0;
-      // }
-      // setTimeout(function() {
-        res.json(ret);
-      // }, 1000);
+      res.json(ret);
     }
   });
 }
