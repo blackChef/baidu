@@ -1,0 +1,27 @@
+{
+  "name": "baidu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "he": "^0.5.0",
+    "express": "^4.13.3",
+    "request": "^2.55.0",
+    "fs-extra": "^0.18.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackChef/baidu.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blackChef/baidu/issues"
+  },
+  "homepage": "https://github.com/blackChef/baidu#readme"
+}
