@@ -31,10 +31,10 @@ app.get('/baidu', function(req, res) {
 
   var url = `http://www.baidu.com/s?wd=${word}&pn=${(page - 1) * 10}`;
 
-  if (page != 1) {
-    res.status(500).end(page);
-    return;
-  }
+  // if (page != 1) {
+  //   res.status(500).end(page);
+  //   return;
+  // }
 
   fetch(url, req, res);
 });
