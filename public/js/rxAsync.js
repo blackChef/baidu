@@ -12,9 +12,10 @@ $('.search').submit(function(event) {
   var source = Rx.Observable.range(1, 5).
       concatMap(function(page) {
         var url = `http://localhost:3000/baidu?word=${$('[name="word"]').val()}&page=${page}`;
-        return Rx.Observable.defer( () => $.getJSON(url) ).retry(3);
-      }).
-      scan(function(preVal, curItem) {
+        return $.getJSON(url);
+      })
+      .retry(5)
+      .scan(function(preVal, curItem) {
         preVal.push({
           page: preVal.length + 1,
           links: curItem
@@ -26,7 +27,6 @@ $('.search').submit(function(event) {
 });
 
 function onNext(pageContent) {
-  console.log('onNext');
   render(pageContent);
 }
 

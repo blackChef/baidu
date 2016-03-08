@@ -22,7 +22,6 @@ var server = app.listen(3000, function () {
 });
 
 
-
 app.get('/baidu', function(req, res) {
   var word = req.query.word;
   var page = req.query.page;
@@ -31,15 +30,10 @@ app.get('/baidu', function(req, res) {
 
   var url = `http://www.baidu.com/s?wd=${word}&pn=${(page - 1) * 10}`;
 
-  // if (page != 1) {
-  //   res.status(500).end(page);
-  //   return;
-  // }
-
-  fetch(url, req, res);
+  fetch(url, req, res, page);
 });
 
-function fetch(url, req, res) {
+function fetch(url, req, res, page) {
   request({url: url, timeout: 5000}, function(err, baiduRes, body) {
     if (err) {
       res.status(500).end(err.message);
@@ -53,7 +47,7 @@ function fetch(url, req, res) {
       var getInfo = function(item) {
         var $item = $(item);
         var anchor = $item.find('.t a');
-        var info = $item.find('.f13 .g');
+        var info = $item.find('.c-showurl');
 
         ret.push({
           href: anchor.attr('href'),
@@ -63,6 +57,7 @@ function fetch(url, req, res) {
           info: he.decode( info.text().trim(), {
             strict: false
           } ),
+          page: page
         });
       };
 
